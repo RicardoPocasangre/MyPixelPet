@@ -20,8 +20,13 @@ const int UMBRAL_ADVERTENCIA = 20;
 const int LARGO_BARRA = 10;
 const int RETARDO_ANIMACION = 12;
 
-//variables
-int valor;
+//Declaracion de variables
+
+//funcion leerEntero
+int valor; 
+
+//funcion esperarEnter
+string basura; //variable temporal para absorber lo que quede en el buffer(la memoria temporal) lo podemos ver como una sala de espera
 
 struct Mascota {
     string nombre;
@@ -69,4 +74,12 @@ int leerEntero()
         cin.ignore(10000, '\n'); // aqui reiniciamos el cin para dejar el canal completamente limpio y que el usuario pueda ocupar la entrada nuevamente
         cout << "Entrada no valida. Ingrese un numero: "; //mostramos el mensaje en que se equivoco para que lo vuelva ingresar y lo haga correctamente
     }
+}
+
+//Pausa el programa hasta que el jugador presione ENTER.
+//Se usa despues de mostrar resultados para que el jugador pueda leerlos.
+void esperarEnter()
+{
+    cout << "\n  Presione ENTER para continuar..."; //nos aseguramos de que el mensaje no quede pegado en el texto anterior de la consola
+    getline(cin, basura); //Leemos toda la linea de texto hasta cuando el usuario presiona la tecla enter, y se guarde en la variable basura
 }
