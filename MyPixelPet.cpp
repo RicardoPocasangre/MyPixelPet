@@ -30,3 +30,10 @@ int main (){
     
     return 0;
 }
+
+//Pausa el programa la cantidad de milisegundos indicada.
+//Usa Sleep() de <windows.h> (no necesita <thread>) => programacion en multihilos.
+void pausar(int ms)
+{
+    Sleep(ms);
+}
