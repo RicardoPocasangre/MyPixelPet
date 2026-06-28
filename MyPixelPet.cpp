@@ -83,3 +83,12 @@ void esperarEnter()
     cout << "\n  Presione ENTER para continuar..."; //nos aseguramos de que el mensaje no quede pegado en el texto anterior de la consola
     getline(cin, basura); //Leemos toda la linea de texto hasta cuando el usuario presiona la tecla enter, y se guarde en la variable basura
 }
+
+//Dibujamos la cabecera decorativa del juego con el titulo.
+void dibujarTitulo()
+{
+    cout << "  +----------------------------------------------+\n";
+    cout << "  |        **  M Y   P I X E L   P E T  **       |\n";
+    cout << "  |      Simulador de mascota virtual            |\n";
+    cout << "  +----------------------------------------------+\n";
+}
