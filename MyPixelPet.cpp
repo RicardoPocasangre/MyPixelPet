@@ -37,3 +37,10 @@ void pausar(int ms)
 {
     Sleep(ms);
 }
+
+//Limpieza de la consola usando el comando del sistema operativo.
+//"cls" funciona en las terminales de windows (cmd y PowerShell).
+void limpiarPantalla()
+{
+    system("cls");
+}
