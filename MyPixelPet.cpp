@@ -6,6 +6,8 @@
 #include <windows.h> //SetConsoleOutputCP, Sleep -> consola Windows
 
 using namespace std;
+
+//Variables constantes que nunca van a cambiar en su contexto
 const int TOTAL_ESTADISTICAS = 4;
 const int TOTAL_ESPECIES = 4;
 const int MAX_PARTIDAS = 5;
@@ -17,6 +19,9 @@ const int SEGUNDOS_RESCATE = 10;
 const int UMBRAL_ADVERTENCIA = 20;
 const int LARGO_BARRA = 10;
 const int RETARDO_ANIMACION = 12;
+
+//variables
+int valor;
 
 struct Mascota {
     string nombre;
@@ -43,4 +48,25 @@ void pausar(int ms)
 void limpiarPantalla()
 {
     system("cls");
+}
+
+//Lee el numero entero que ingresa el usuario y lo valida de entrada
+//Si el usuario escribe letras o simbolos, limpia el error y lo vuelve a pedir.
+//Si la entrada se agota (EOF) *solo en casos especiales que el usuario presione una combinacion de teclas especiales*
+//Y da la indicacion de cerrar el programa o darle fin, devuelve 5 (= "Guardar y salir") para salir limpio.
+int leerEntero()
+{
+    //Inicia un bucle infinito hasta que el usuario ingrese un valor valido
+    while(true) {
+        if(cin >> valor) //Se lee lo que el usuario ingreso para validar que si es un valor entero
+        {
+            cin.ignore(10000, '\n'); //si la lectura fue correcta, se limpia la memora temporal y ignora los siguientes 10000 caracteres o hasta encontrar un salto de linea "\n"
+            return valor;
+        }
+        //si llegamos aqui es por que el usuario ingreso un valor invalido(hola, abc, etc) osea que encontramos el error en la capa 8
+        if (cin.eof()) return 5; //si el usuario manda la señal de fin del archivo el programa devuelve el valor 5 para guardar y salir
+        cin.clear(); //limpia la entrada que esta con un error
+        cin.ignore(10000, '\n'); // aqui reiniciamos el cin para dejar el canal completamente limpio y que el usuario pueda ocupar la entrada nuevamente
+        cout << "Entrada no valida. Ingrese un numero: "; //mostramos el mensaje en que se equivoco para que lo vuelva ingresar y lo haga correctamente
+    }
 }
