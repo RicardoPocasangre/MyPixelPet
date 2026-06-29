@@ -296,3 +296,18 @@ bool cargarSlot(int slot, Mascota& m) {
     archivo.close();
     return true;
 } //restaurador de estado. Toma la información de el archivo de disco y la mueve al struct Mascota).
+
+//Este congela los datos. Toma el estado actual del struct Mascota y lo escribe de forma permanente en el disco.
+// Guarda el estado de la mascota en el archivo correspondiente
+void guardarSlot(int slot, const Mascota& m) {
+    ofstream archivo(nombreArchivo(slot));
+    if (archivo.is_open()) {
+        archivo << m.nombre << "\n" << m.indiceEspecie << "\n";
+        for (int i = 0; i < TOTAL_ESTADISTICAS; i++) {
+            archivo << m.estadisticas[i] << "\n";
+        }
+        archivo.close();
+    }
+}
+
+ 
