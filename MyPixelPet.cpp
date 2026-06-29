@@ -145,7 +145,7 @@ void aplicarAccion(Mascota& m, int opcion)
     truncarEstadisticas(m);
 }
 
-// Verifica si la accion indicada (indice 0-3) sigue en cooldown de 60 segundos.
+// Verifica si la accion indicada sigue en cooldown de 60 segundos.
 // Escribe en segsRestantes cuantos segundos faltan para que se libere.
 // Devuelve true si esta bloqueada, false si ya puede usarse.
 bool accionEnCooldown(const Mascota& m, int idx, int& segsRestantes)
@@ -162,3 +162,14 @@ bool accionEnCooldown(const Mascota& m, int idx, int& segsRestantes)
     return false; // disponible
 }
 
+// Recorre las 4 estadisticas y devuelve el indice de la primera que llego a 0%.
+// Si ninguna llego a 0%, devuelve -1 (todo esta bien).
+int indiceEstadisticaCritica(const Mascota& m)
+{
+    for (int i = 0; i < TOTAL_ESTADISTICAS; i++) {
+        if (m.estadisticas[i] <= LIMITE_MINIMO) {
+            return i; // esta estadistica esta en 0%: es critica
+        }
+    }
+    return -1; // ninguna estadistica en 0% (todo bien)
+}
