@@ -144,3 +144,21 @@ void aplicarAccion(Mascota& m, int opcion)
     // Despues de modificar, asegura que ningun valor quede fuera de [0, 100], con la funcion que hcimos anteriormente
     truncarEstadisticas(m);
 }
+
+// Verifica si la accion indicada (indice 0-3) sigue en cooldown de 60 segundos.
+// Escribe en segsRestantes cuantos segundos faltan para que se libere.
+// Devuelve true si esta bloqueada, false si ya puede usarse.
+bool accionEnCooldown(const Mascota& m, int idx, int& segsRestantes)
+{
+    // Calcula cuantos segundos han pasado desde el ultimo uso de esta accion
+    double transcurrido = difftime(time(0), m.ultimaAccion[idx]);
+
+    if (transcurrido < SEGUNDOS_COOLDOWN) {
+        // La accion todavia esta en cooldown se calcula el tiempo restante
+        segsRestantes = SEGUNDOS_COOLDOWN - (int)transcurrido;
+        return true; // bloqueada
+    }
+    segsRestantes = 0;
+    return false; // disponible
+}
+
