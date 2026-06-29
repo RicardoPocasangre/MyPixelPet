@@ -114,3 +114,33 @@ void truncarEstadisticas(Mascota& m)
         else if (m.estadisticas[i] < LIMITE_MINIMO) m.estadisticas[i] = LIMITE_MINIMO;// compara las estadisticas para que no se pasen del minimo
     }
 }
+// Aca se pondra lo que sucede cuando el jugador decide utilizar alguna opcion, algunas estadisticas bajaran y otras subiran
+void aplicarAccion(Mascota& m, int opcion)
+{
+    switch (opcion) {
+        case 1: // Dar comida: sube Alimentacion y Felicidad, baja Higiene
+            m.estadisticas[0] += 35;  // Alimentacion: +35
+            m.estadisticas[3] += 10;  // Felicidad:    +10
+            m.estadisticas[2] -= 10;  // Higiene:      -10
+            break;
+        case 2: // Bañar: sube Higiene y Energia, baja Felicidad y Alimentacion
+            m.estadisticas[2] += 100; // Higiene:      +100
+            m.estadisticas[1] += 15;  // Energia:      +15
+            m.estadisticas[3] -= 10;  // Felicidad:    -10
+            m.estadisticas[0] -= 20;  // Alimentacion: -20
+            break;
+        case 3: // Dormir: sube Energia y Felicidad, baja Higiene y Alimentacion
+            m.estadisticas[1] += 100; // Energia:      +100
+            m.estadisticas[3] += 35;  // Felicidad:    +35
+            m.estadisticas[2] -= 15;  // Higiene:      -15
+            m.estadisticas[0] -= 35;  // Alimentacion: -35
+            break;
+        case 4: // Jugar: sube Felicidad pero baja mucho Higiene y Energia
+            m.estadisticas[3] += 100; // Felicidad:    +100
+            m.estadisticas[2] -= 50;  // Higiene:      -50
+            m.estadisticas[1] -= 50;  // Energia:      -50
+            break;
+    }
+    // Despues de modificar, asegura que ningun valor quede fuera de [0, 100], con la funcion que hcimos anteriormente
+    truncarEstadisticas(m);
+}
