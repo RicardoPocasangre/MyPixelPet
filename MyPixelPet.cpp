@@ -242,3 +242,13 @@ bool gestionarRescate(Mascota& m, int indiceCritico)
     cout << "\n  Esa accion no recupero la estadistica critica.\n";
     return false; // rescate fallido: la mascota muere (Game over :c)
 }
+
+void mostrarGameOver(const Mascota& m, const string especies[])
+{
+    limpiarPantalla(); // se limpia la pantalla
+    dibujarGameOverArt(); // se muestra arte ASCII de Game Over
+    cout << "\n  " << m.nombre << " (" << especies[m.indiceEspecie]
+         << ") no logro sobrevivir...\n";// se muestra un mensaje al jugador y una recomendacion
+    cout << "  La proxima vez manten todas las estadisticas sobre 0%.\n\n";
+    esperarEnter();
+}
