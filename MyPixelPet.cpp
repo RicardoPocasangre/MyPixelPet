@@ -173,3 +173,13 @@ int indiceEstadisticaCritica(const Mascota& m)
     }
     return -1; // ninguna estadistica en 0% (todo bien)
 }
+// aca se muestran algunas sugerencias para el jugador si alguna estadistica esta baja
+string nombreAccionRecomendada(int idx)
+{
+    // digamos si alimentacion esta baja se mostrara, Dar comida, ya asi con todas las estadisticas
+    if (idx == 0) return "Dar comida (opcion 1)"; // Alimentacion -> Dar comida
+    if (idx == 1) return "Dormir     (opcion 3)"; // Energia      -> Dormir
+    if (idx == 2) return "Bañar      (opcion 2)"; // Higiene      -> Bañar
+    if (idx == 3) return "Jugar      (opcion 4)"; // Felicidad    -> Jugar
+    return "una accion";
+}
