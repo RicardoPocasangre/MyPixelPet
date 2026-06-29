@@ -105,3 +105,12 @@ string obtenerAdvertencia(int valor, int idx)
     if (idx == 3) return " <-- Advertencia: Muy Triste!"; // aca la mascota necesita jugar para no estar triste
     return "";
 }
+// Recorta cada estadistica para que no salga del rango valido [0, 100].
+// Usa if-else (requisito del enunciado, no usa min/max de libreria).
+void truncarEstadisticas(Mascota& m)
+{
+    for (int i = 0; i < TOTAL_ESTADISTICAS; i++) {
+        if      (m.estadisticas[i] > LIMITE_MAXIMO) m.estadisticas[i] = LIMITE_MAXIMO; // compara las estadisticas para que no se pase del maximo 
+        else if (m.estadisticas[i] < LIMITE_MINIMO) m.estadisticas[i] = LIMITE_MINIMO;// compara las estadisticas para que no se pasen del minimo
+    }
+}
