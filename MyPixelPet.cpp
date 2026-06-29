@@ -267,3 +267,18 @@ void   borrarSlot(int slot);             // elimina el archivo del slot (se usa 
 string nombreArchivo(int slot) {
     return "slot" + to_string(slot) + ".txt";
 }
+
+// Verifica si el archivo del slot(compartimento) existe y tiene contenido 
+bool slotTienePartida(int slot) {
+    ifstream f(nombreArchivo(slot));
+    return f.is_open() && f.peek() != EOF; // peek es para leerel siguiente caracter sin avanzar la lectura, y el EOF es para indicar que el archivo se termino o que esta vacio.
+}
+
+// Cuenta cuántos slots tienen una partida que esta activa. 
+int contarPartidas() {
+    int count = 0;
+    for (int s = 1; s <= MAX_PARTIDAS; s++) {
+        if (slotTienePartida(s)) count++;
+    }
+    return count;
+} // bucle simple que recorre todos los slots permitidos (del 1 al 5) y pregunta a slotTienePartida(s) si hay algo guardado. Si la respuesta es true, suma 1 al contador.
