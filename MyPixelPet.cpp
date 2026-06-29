@@ -92,3 +92,16 @@ void dibujarTitulo()
     cout << "  |      Simulador de mascota virtual            |\n";
     cout << "  +----------------------------------------------+\n";
 }
+//En esta parte mostramos un mensaje de advertencia si la estadistica esta debajo de 20%
+// de lo contrario, devuelve una cadena vacia
+string obtenerAdvertencia(int valor, int idx)
+{
+    if (valor >= UMBRAL_ADVERTENCIA) return ""; // sin peligro: no muestra nada
+
+    // Mensaje personalizado segun que estadistica esta en peligro
+    if (idx == 0) return " <-- Advertencia: Mucha Hambre!"; // aca es por si el hambre esta abaja y la mascota necesita comer
+    if (idx == 1) return " <-- Advertencia: Muy Cansado!"; // aca es por si la mascota esta cansada, necesita dormir
+    if (idx == 2) return " <-- Advertencia: Muy Sucio!"; // aca la mascota necesita un baño
+    if (idx == 3) return " <-- Advertencia: Muy Triste!"; // aca la mascota necesita jugar para no estar triste
+    return "";
+}
