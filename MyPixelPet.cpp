@@ -183,3 +183,62 @@ string nombreAccionRecomendada(int idx)
     if (idx == 3) return "Jugar      (opcion 4)"; // Felicidad    -> Jugar
     return "una accion";
 }
+
+bool gestionarRescate(Mascota& m, int indiceCritico)
+{
+    // Arreglo local con los nombres de las estadisticas (para el mensaje de alerta)
+    string nombresEstadistica[TOTAL_ESTADISTICAS] = {
+        "Alimentacion", "Energia", "Higiene", "Felicidad"
+    };
+
+    // Muestra la pantalla de alerta critica
+    limpiarPantalla();
+    cout << "\n";
+    cout << "  +----------------------------------------------+\n";
+    cout << "  |       !! ALERTA CRITICA - EMERGENCIA !!      |\n";
+    cout << "  +----------------------------------------------+\n";
+    cout << "  |\n";
+    cout << "  |  '" << nombresEstadistica[indiceCritico]
+         << "' de " << m.nombre << " llego a 0%!\n";
+    cout << "  |\n";
+    cout << "  |  Tienes " << SEGUNDOS_RESCATE
+         << " SEGUNDOS para reaccionar o\n";
+    cout << "  |  " << m.nombre << " no sobrevivira...\n";
+    cout << "  |\n";
+    cout << "  |  Accion recomendada:\n";
+    cout << "  |    >> " << nombreAccionRecomendada(indiceCritico) << "\n";
+    cout << "  |\n";
+    cout << "  +----------------------------------------------+\n";
+    cout << "  |  1.Comida   2.Banar   3.Dormir   4.Jugar    |\n";
+    cout << "  +----------------------------------------------+\n";
+    cout << "\n  Opcion de rescate: ";
+
+    time_t inicio = time(0);      // marca de tiempo ANTES de esperar al jugador
+    int    opcion = leerEntero(); // lectura bloqueante: espera al jugador
+    double tReacc = difftime(time(0), inicio); // tiempo que tardo en responder
+
+    // 1) Verifica que respondio dentro de los 10 segundos permitidos
+    if (tReacc > SEGUNDOS_RESCATE) {
+        cout << "\n  Tardaste " << (int)tReacc << " seg. Demasiado lento!\n";
+        return false; // tiempo agotado: la mascota muere (Game over)
+    }
+
+    // 2) Valida que la opcion sea una de las 4 acciones del juego
+    if (opcion < 1 || opcion > 4) {
+        cout << "\n  Opcion invalida durante la emergencia.\n";
+        return false; // opcion invalida: la mascota muere (Game over)
+    }
+
+    // Aplica la accion elegida (el cooldown se ignora en el rescate: es una emergencia)
+    aplicarAccion(m, opcion);
+
+    // 3) Verifica si la estadistica critica se recupero por encima de 0%
+    if (m.estadisticas[indiceCritico] > LIMITE_MINIMO) {
+        cout << "\n  Reaccionaste a tiempo! " << m.nombre << " se ha salvado.\n";
+        return true; // rescate exitoso: la mascota sobrevivio (yeiii)
+    }
+
+    // La accion elegida no fue suficiente para recuperar la estadistica critica
+    cout << "\n  Esa accion no recupero la estadistica critica.\n";
+    return false; // rescate fallido: la mascota muere (Game over :c)
+}
