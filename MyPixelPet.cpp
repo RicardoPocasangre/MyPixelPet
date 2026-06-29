@@ -262,3 +262,8 @@ int    contarPartidas();                 // cuenta cuantos slots estan ocupados
 bool   cargarSlot(int slot, Mascota& m); // lee el archivo y carga el estado en la mascota
 void   guardarSlot(int slot, const Mascota& m); // escribe el estado en el archivo del slot
 void   borrarSlot(int slot);             // elimina el archivo del slot (se usa al morir)
+
+// Devuelve el nombre del archivo según el slot (ej: "slot1.txt")
+string nombreArchivo(int slot) {
+    return "slot" + to_string(slot) + ".txt";
+}
