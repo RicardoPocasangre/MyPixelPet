@@ -252,3 +252,13 @@ void mostrarGameOver(const Mascota& m, const string especies[])
     cout << "  La proxima vez manten todas las estadisticas sobre 0%.\n\n";
     esperarEnter();
 }
+
+//GRACIA... 
+//Declaracion de cada archivo.
+// -- Persistencia (archivos slot1.txt ... slot5.txt) --
+string nombreArchivo(int slot);          // devuelve "slot1.txt", "slot2.txt"(compartimentos donde se guardan las partidas, tambien puedes guardarse varias de diferente juego) 
+bool   slotTienePartida(int slot);       // true si el archivo del slot existe y tiene datos
+int    contarPartidas();                 // cuenta cuantos slots estan ocupados
+bool   cargarSlot(int slot, Mascota& m); // lee el archivo y carga el estado en la mascota
+void   guardarSlot(int slot, const Mascota& m); // escribe el estado en el archivo del slot
+void   borrarSlot(int slot);             // elimina el archivo del slot (se usa al morir)
