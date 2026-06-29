@@ -310,4 +310,7 @@ void guardarSlot(int slot, const Mascota& m) {
     }
 }
 
- 
+//elimina el archivo de la carpeta. En especial cuado se a perdido la partida y muere la mascota.
+void borrarSlot(int slot) {
+    remove(nombreArchivo(slot).c_str());
+}
