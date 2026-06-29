@@ -282,3 +282,17 @@ int contarPartidas() {
     }
     return count;
 } // bucle simple que recorre todos los slots permitidos (del 1 al 5) y pregunta a slotTienePartida(s) si hay algo guardado. Si la respuesta es true, suma 1 al contador.
+
+// Carga los datos de la mascota desde el archivo al struct
+bool cargarSlot(int slot, Mascota& m) {
+    ifstream archivo(nombreArchivo(slot));
+    if (!archivo.is_open()) return false;
+
+    if (!getline(archivo, m.nombre) || m.nombre.empty()) { archivo.close(); return false; }
+    if (!(archivo >> m.indiceEspecie))                   { archivo.close(); return false; }
+    for (int i = 0; i < TOTAL_ESTADISTICAS; i++) {
+        if (!(archivo >> m.estadisticas[i]))             { archivo.close(); return false; }
+    }
+    archivo.close();
+    return true;
+} //restaurador de estado. Toma la información de el archivo de disco y la mueve al struct Mascota).
