@@ -132,6 +132,20 @@ void dibujarAnimal(int idx)
     }
 }
 
+//Impresion del dibujo del game over
+void dibujarGameOverArt()
+{
+    cout << "\n";
+    cout << "  +----------------------------------------------+\n";
+    cout << "  |                                              |\n";
+    cout << "  |          ###  GAME  OVER  ###                |\n";
+    cout << "  |                                              |\n";
+    cout << "  |    x_x   Tu mascota no sobrevivio...  x_x   |\n";
+    cout << "  |   (   )  La proxima cuidala mejor!   (   )  |\n";
+    cout << "  |    | |                                 | |   |\n";
+    cout << "  +----------------------------------------------+\n";
+}
+
 //En esta parte mostramos un mensaje de advertencia si la estadistica esta debajo de 20%
 // de lo contrario, devuelve una cadena vacia
 string obtenerAdvertencia(int valor, int idx)
