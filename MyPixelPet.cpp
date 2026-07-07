@@ -92,6 +92,46 @@ void dibujarTitulo()
     cout << "  |      Simulador de mascota virtual            |\n";
     cout << "  +----------------------------------------------+\n";
 }
+
+//Dibujamos el arte de los animales ocupando ASCII
+//0 = Gato   1 = Perro   2 = Conejo   3 = Pajaro
+void dibujarAnimal(int idx)
+{
+    if (idx == 0) { // Gato
+        cout << "          /\\_____/\\\n";
+        cout << "         /  o   o  \\\n";
+        cout << "        ( ==  ^  == )\n";
+        cout << "         )  (*)   (\n";
+        cout << "        (  _____  )\n";
+        cout << "       / \\(     )/ \\\n";
+        cout << "      (   )     (   )\n";
+    } else if (idx == 1) { // Perro
+        cout << "          _____\n";
+        cout << "        /|  o  o|\\\n";
+        cout << "       / |  --- | \\\n";
+        cout << "      /  |_______|  \\\n";
+        cout << "     / //         \\\\ \\\n";
+        cout << "    (  ||  [ __ ]  ||  )\n";
+        cout << "     \\_||___|__|___||_/\n";
+    } else if (idx == 2) { // Conejo
+        cout << "       |\\     /|\n";
+        cout << "       | \\   / |\n";
+        cout << "       |  \\_/  |\n";
+        cout << "      /  o   o  \\\n";
+        cout << "     ( ==  w  == )\n";
+        cout << "      \\   ___   /\n";
+        cout << "      (_)     (_)\n";
+    } else { // Pajaro (idx == 3)
+        cout << "          ___\n";
+        cout << "         /. .\\\n";
+        cout << "        / \\_/ \\\n";
+        cout << "       /  ---  \\\n";
+        cout << "      ( |     | )\n";
+        cout << "      |  \\___/  |\n";
+        cout << "     /___________\\\n";
+    }
+}
+
 //En esta parte mostramos un mensaje de advertencia si la estadistica esta debajo de 20%
 // de lo contrario, devuelve una cadena vacia
 string obtenerAdvertencia(int valor, int idx)
