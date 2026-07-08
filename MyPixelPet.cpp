@@ -301,7 +301,7 @@ void dibujarAnimal(int idx)
         cout << "  |\\---/|\n";
         cout << "  | ,_, |\n";
         cout << "   \\_`_/-..----.\n";
-        cout << " ___/ `   ' ,\"\"+ \\  sk\n";
+        cout << " ___/ `   ' ,\"\"+ \\    \n";
         cout << "(__...'   __\\    |`.___.';\n";
         cout << "  (_,...'(_,.`__)/'.....+\n";
     }
@@ -394,43 +394,6 @@ int menuPrincipal()
         op = leerEntero();
     }
     return op;
-}
-
-// Lee y valida la especie seleccionada por el jugador.
-// Devuelve el indice de la especie en base 0.
-int seleccionarEspecie(const string especies[])
-{
-    int opcion = leerEntero();
-    while (opcion < 1 || opcion > TOTAL_ESPECIES)
-    {
-        cout << "  Opcion no valida. Elige un numero entre 1 y "
-             << TOTAL_ESPECIES << ": ";
-        opcion = leerEntero();
-    }
-    return opcion - 1;
-}
-
-// Lee el nombre de la mascota. No permite cadenas vacias.
-string pedirNombre()
-{
-    string nombre;
-    getline(cin, nombre);
-    while (nombre.empty())
-    {
-        cout << "  El nombre no puede estar vacio. Ingresa un nombre: ";
-        getline(cin, nombre);
-    }
-    return nombre;
-}
-
-// Inicializa todas las estadisticas al valor inicial y deja los cooldowns disponibles.
-void inicializarEstadisticas(Mascota &m)
-{
-    for (int i = 0; i < TOTAL_ESTADISTICAS; i++)
-    {
-        m.estadisticas[i] = VALOR_INICIAL;
-        m.ultimaAccion[i] = 0; // 0 significa que la accion esta disponible inmediatamente
-    }
 }
 
 // Muestra todos los slots con la informacion de cada partida guardada.
@@ -668,6 +631,121 @@ string obtenerAdvertencia(int valor, int idx)
         return " <-- Advertencia: Muy Triste!"; // aca la mascota necesita jugar para no estar triste
     return "";
 }
+
+// Muestra el panel principal del juego:
+// -Encabezado con nombre y especie
+// -Las 4 barras de estadisticas con sus advertencias
+// -El artee ASCII del animalito debajo
+void mostrarPanelJuego(const Mascota &m, const string especies[])
+{
+    //arte del animal dividido en lineas segun la especie
+    //(mismo arte que dibujarAnimal, en formato de arreglo para el panel)
+    string arte[13];
+    int lineasArte = 7;
+    if (m.indiceEspecie == 0)
+    { //Gato
+        arte[0] = "  |\\---/|";
+        arte[1] = "  | ,_, |";
+        arte[2] = "   \\`/-..----.";
+        arte[3] = " _/ `   ' ,\"\"+ \\    ";
+        arte[4] = "(_...'   _\\    |`._.';";
+        arte[5] = "  (,...'(,.`__)/'.....+";
+        lineasArte = 6;
+    }
+    else if (m.indiceEspecie == 1)
+    { //Perro
+        arte[0] = "         __";
+        arte[1] = "        /  \\";
+        arte[2] = "       / ..|\\";
+        arte[3] = "      (\\  |)";
+        arte[4] = "      /  \\@'";
+        arte[5] = "     /     \\";
+        arte[6] = "_   /  `   |";
+        arte[7] = "\\\\/  \\  | _\\";
+        arte[8] = " \\   /_ || \\\\_";
+        arte[9] = "  \\_)|) \\_)";
+        lineasArte = 10;
+    }
+    else if (m.indiceEspecie == 2)
+    { //Conejo
+        arte[0] = "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⡀⠀⢀⣀⠀⠀⠀";
+        arte[1] = "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡎⠀⠸⡄⡇⠀⠱⡀⠀";
+        arte[2] = "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠱⡀⠀⢱⢣⠀⠀⡇⠀";
+        arte[3] = "⠀⠀⠀⠀⠀⢀⡠⠤⠤⡀⠀⠱⡀⠸⣈⠇⢠⠃⠀";
+        arte[4] = "⠀⡠⠤⢄⠔⠁⠀⠀⠀⠈⠉⢢⠃⠀⠀⠀⠫⡀⠀";
+        arte[5] = "⢸⠀⢠⠃⠀⠀⠀⠀⠀⠀⠀⠈⠀⠀⠿⠀⠀⢱⠀";
+        arte[6] = "⠈⠣⡇⠀⠀⠀⠉⡆⠀⠀⠀⠀⠀⠀⠀⠀⢲⠈⡆";
+        arte[7] = "⠀⠀⢣⠀⠀⠀⢀⠇⠀⠀⠀⠀⠑⠤⣀⣀⣁⡡⠁";
+        arte[8] = "⠀⠀⠈⢧⠀⠀⠑⠒⠒⢦⠀⠀⢠⠀⠠⠤⢧⡀⠀";
+        arte[9] = "⠀⠀⠀⠀⠓⠒⠦⠤⠤⠜⠒⠒⠚⠦⠤⠤⠤⠃⠀";
+        lineasArte = 10;
+    }
+    else
+    { //Pajaro
+        arte[0] = "      ....";
+        arte[1] = "    /       \\";
+        arte[2] = "   /  o _ o";
+        arte[3] = "   (    \\/  )";
+        arte[4] = "  )          (";
+        arte[5] = "(    -  -  -  )";
+        arte[6] = "(             )";
+        arte[7] = " (            )";
+        arte[8] = "  [          ]";
+        arte[9] = "---/l\\    /l\\--------";
+        arte[10] = "  ----------------";
+        arte[11] = "     (  )";
+        arte[12] = "    ( __ _)";
+        lineasArte = 13;
+    }
+
+    //Etiquetas alineadas de las 4 estadisticas (mismo orden que el arreglo)
+    string etiquetas[TOTAL_ESTADISTICAS] = {
+        "Alimentacion", // indice 0
+        "Energia     ", // indice 1
+        "Higiene     ", // indice 2
+        "Felicidad   "  // indice 3
+    };
+
+    //Encabezado con el nombre y la especie de la mascota
+    cout << "  +----------------------------------------------+\n";
+    cout << "  |  >> " << m.nombre
+         << "  (" << especies[m.indiceEspecie] << ")\n";
+    cout << "  +----------------------------------------------+\n";
+
+    //Dibuja las 4 barras de estadisticas con sus advertencias
+    //Usa un bucle for (requisito del enunciado)
+    for (int i = 0; i < TOTAL_ESTADISTICAS; i++)
+    {
+        cout << "  |  " << etiquetas[i] << " : ";
+        dibujarBarra(m.estadisticas[i]);                          //barra animada
+        cout << obtenerAdvertencia(m.estadisticas[i], i) << "\n"; //aviso si < 20%
+    }
+
+    //Separador y artee ASCII del animalito
+    cout << "  +----------------------------------------------+\n";
+    for (int i = 0; i < 7; i++)
+    {
+        cout << "  |  " << arte[i] << "\n";
+    }
+    cout << "  +----------------------------------------------+\n";
+}
+
+//Imprime el menu de acciones con la matriz de impacto de cada una.
+void mostrarMenuAcciones()
+{
+    cout << "\n";
+    cout << "  +----------------------------------------------+\n";
+    cout << "  |        QUE HACES CON TU MASCOTA?             |\n";
+    cout << "  +----------------------------------------------+\n";
+    cout << "  |  1. Dar comida  (Alim+35, Felic+10, Hig-10) |\n";  //recupera Alimentacion
+    cout << "  |  2. Banar       (Hig+100, Ener+15, Alim-20) |\n";  //recupera Higiene
+    cout << "  |  3. Dormir      (Ener+100, Felic+35, Alim-35)|\n"; //recupera Energia
+    cout << "  |  4. Jugar       (Felic+100, Hig-50, Ener-50) |\n"; //recupera Felicidad
+    cout << "  |  5. Guardar y salir                          |\n"; //guarda y termina
+    cout << "  +----------------------------------------------+\n";
+    cout << "\n  Selecciona una opcion: ";
+}
+
 // Recorta cada estadistica para que no salga del rango valido [0, 100].
 // Usa if-else (requisito del enunciado, no usa min/max de libreria).
 void truncarEstadisticas(Mascota &m)
