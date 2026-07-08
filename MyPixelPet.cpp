@@ -36,6 +36,51 @@ struct Mascota
     time_t ultimaAccion[TOTAL_ESTADISTICAS];
 };
 
+// -- Utilidades generales --
+void   pausar(int ms);          // pausa el programa N milisegundos (usa Sleep de windows.h)
+void   limpiarPantalla();       // borra la consola (usa system("cls"))
+int    leerEntero();            // lee un entero validando que la entrada sea numerica
+void   esperarEnter();          // pausa hasta que el usuario presione ENTER
+
+// -- Arte ASCII --
+void   dibujarTitulo();                // cabecera decorativa del juego
+void   dibujarAnimal(int idx);         // dibuja el animalito segun la especie (0-3)
+void   dibujarGameOverArt();           // arte de pantalla de derrota
+
+// -- Menus de navegacion (flujo del diagrama) --
+int    menuPrincipal();                               // muestra el menu de inicio (1-3)
+bool   menuCargarPartida(Mascota& m, const string e[]); // lista slots y carga el elegido
+void   menuNuevaPartida(Mascota& m, const string e[]);  // configura especie y nombre
+
+// -- Inicializacion de datos --
+void   inicializarEspecies(string especies[]);        // llena el arreglo de especies
+void   inicializarEstadisticas(Mascota& m);           // pone stats al 50% y cooldowns en 0
+int    seleccionarEspecie(const string especies[]);   // pide y devuelve el indice de especie
+string pedirNombre();                                 // pide y devuelve el nombre de la mascota
+
+// -- Interfaz del juego (lo que ve el jugador en cada turno) --
+void   mostrarPanelJuego(const Mascota& m, const string e[]); // panel con stats + animalito
+void   mostrarMenuAcciones();                  // imprime el menu de las 5 opciones
+void   dibujarBarra(int valor);                // barra animada tipo [||||||    ] 60%
+string obtenerAdvertencia(int valor, int idx); // retorna texto de aviso si stat < 20%
+
+// -- Mecanicas del juego --
+void   truncarEstadisticas(Mascota& m);        // recorta cada stat al rango [0, 100]
+void   aplicarAccion(Mascota& m, int opcion);  // aplica la matriz de impacto (+=  -=)
+bool   accionEnCooldown(const Mascota& m, int idx, int& segsRestantes); // verifica cooldown
+int    indiceEstadisticaCritica(const Mascota& m); // devuelve indice de la 1ra stat en 0%
+string nombreAccionRecomendada(int idx);       // nombre de la accion que salva esa stat
+bool   gestionarRescate(Mascota& m, int indiceCritico); // ventana de 10s para salvar mascota
+void   mostrarGameOver(const Mascota& m, const string e[]); // pantalla de derrota
+
+// -- Persistencia (archivos slot1.txt ... slot5.txt) --
+string nombreArchivo(int slot);          // devuelve "slot1.txt", "slot2.txt", etc.
+bool   slotTienePartida(int slot);       // true si el archivo del slot existe y tiene datos
+int    contarPartidas();                 // cuenta cuantos slots estan ocupados
+bool   cargarSlot(int slot, Mascota& m); // lee el archivo y carga el estado en la mascota
+void   guardarSlot(int slot, const Mascota& m); // escribe el estado en el archivo del slot
+void   borrarSlot(int slot);             // elimina el archivo del slot (se usa al morir)
+
 int main()
 {
 
