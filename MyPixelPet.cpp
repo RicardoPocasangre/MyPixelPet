@@ -723,7 +723,7 @@ void mostrarPanelJuego(const Mascota &m, const string especies[])
 
     //Separador y artee ASCII del animalito
     cout << "  +----------------------------------------------+\n";
-    for (int i = 0; i < 7; i++)
+    for (int i = 0; i < lineasArte; i++)
     {
         cout << "  |  " << arte[i] << "\n";
     }
