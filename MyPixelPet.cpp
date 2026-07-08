@@ -173,8 +173,178 @@ int menuPrincipal()
         cout << "  Opcion no valida. Elige 1, 2 o 3: ";
         op = leerEntero();
     }
-    return op;
+    return op;  
 }
+
+// Lee y valida la especie seleccionada por el jugador.
+// Devuelve el indice de la especie en base 0.
+int seleccionarEspecie(const string especies[])
+{
+    int opcion = leerEntero();
+    while (opcion < 1 || opcion > TOTAL_ESPECIES) {
+        cout << "  Opcion no valida. Elige un numero entre 1 y "
+             << TOTAL_ESPECIES << ": ";
+        opcion = leerEntero();
+    }
+    return opcion - 1;
+}
+
+// Lee el nombre de la mascota. No permite cadenas vacias.
+string pedirNombre()
+{
+    string nombre;
+    getline(cin, nombre);
+    while (nombre.empty()) {
+        cout << "  El nombre no puede estar vacio. Ingresa un nombre: ";
+        getline(cin, nombre);
+    }
+    return nombre;
+}
+
+// Inicializa todas las estadisticas al valor inicial y deja los cooldowns disponibles.
+void inicializarEstadisticas(Mascota& m)
+{
+    for (int i = 0; i < TOTAL_ESTADISTICAS; i++) {
+        m.estadisticas[i] = VALOR_INICIAL;
+        m.ultimaAccion[i] = 0; // 0 significa que la accion esta disponible inmediatamente
+    }
+}
+
+// Muestra todos los slots con la informacion de cada partida guardada.
+// Deja elegir uno para cargarlo.
+// Devuelve true si se cargo una partida, false si no habia o el usuario cancelo.
+bool menuCargarPartida(Mascota& m, const string especies[])
+{
+    limpiarPantalla();
+    dibujarTitulo();
+
+    cout << "\n";
+    cout << "  +----------------------------------------------+\n";
+    cout << "  |              CARGAR PARTIDA                  |\n";
+    cout << "  +----------------------------------------------+\n";
+
+    int slotsDisponibles = 0; // contador de slots que tienen partida guardada
+
+    // Recorre todos los slots del 1 al MAX_PARTIDAS y muestra su contenido
+    for (int s = 1; s <= MAX_PARTIDAS; s++) {
+        Mascota tmp; // struct temporal para leer los datos sin afectar la mascota actual
+        cout << "  |\n";
+        if (cargarSlot(s, tmp)) {
+            // El slot tiene datos: muestra el resumen de la partida
+            slotsDisponibles++;
+            cout << "  |  Slot [" << s << "] >> " << tmp.nombre
+                 << "  (" << especies[tmp.indiceEspecie] << ")\n";
+            cout << "  |          Alim: "  << tmp.estadisticas[0]
+                 << "%  Ener: "            << tmp.estadisticas[1]
+                 << "%  Hig: "             << tmp.estadisticas[2]
+                 << "%  Felic: "           << tmp.estadisticas[3] << "%\n";
+        } else {
+            // El slot esta vacio: lo muestra como disponible
+            cout << "  |  Slot [" << s << "] -- vacio --\n";
+        }
+    }
+
+    cout << "  |\n";
+    cout << "  |  0.  Volver al menu principal\n";
+    cout << "  |\n";
+    cout << "  +----------------------------------------------+\n";
+
+    // Si no hay ninguna partida guardada, informa y regresa al menu principal
+    if (slotsDisponibles == 0) {
+        cout << "\n  No hay partidas guardadas. Crea una nueva.\n";
+        esperarEnter();
+        return false; // no se cargo nada
+    }
+
+    // Pide al jugador que elija el numero de slot
+    cout << "\n  Selecciona el slot a cargar (0 = volver): ";
+    int slot = leerEntero();
+
+    // Valida que el slot elegido exista, tenga datos y no sea 0
+    while (slot != 0 && (slot < 1 || slot > MAX_PARTIDAS || !slotTienePartida(slot))) {
+        cout << "  Slot no valido o vacio. Elige otro (0 = volver): ";
+        slot = leerEntero();
+    }
+
+    if (slot == 0) return false; // el jugador decidio volver sin cargar
+
+    // Carga los datos del slot elegido en la mascota
+    cargarSlot(slot, m);
+
+    // Muestra una confirmacion visual de la carga
+    limpiarPantalla();
+    dibujarTitulo();
+    cout << "\n";
+    cout << "  +----------------------------------------------+\n";
+    cout << "  |         PARTIDA CARGADA CON EXITO            |\n";
+    cout << "  +----------------------------------------------+\n";
+    cout << "  |  Nombre  : " << m.nombre << "\n";
+    cout << "  |  Especie : " << especies[m.indiceEspecie] << "\n";
+    cout << "  |  Alim: "    << m.estadisticas[0]
+         << "%  Ener: "      << m.estadisticas[1]
+         << "%  Hig: "       << m.estadisticas[2]
+         << "%  Felic: "     << m.estadisticas[3] << "%\n";
+    cout << "  +----------------------------------------------+\n\n";
+    dibujarAnimal(m.indiceEspecie); // muestra el animalito de la especie cargada
+    cout << "\n  Bienvenido de vuelta, " << m.nombre << "!\n";
+    esperarEnter();
+    return true; // partida cargada correctamente
+}
+
+// Configura una nueva mascota: pide la especie y el nombre,
+// luego inicializa todas las estadisticas al 50%.
+void menuNuevaPartida(Mascota& m, const string especies[])
+{
+    limpiarPantalla();
+    dibujarTitulo();
+
+    // Muestra el menu de seleccion de especie
+    cout << "\n";
+    cout << "  +----------------------------------------------+\n";
+    cout << "  |              NUEVA PARTIDA                   |\n";
+    cout << "  +----------------------------------------------+\n";
+    cout << "  |  Elige la especie de tu mascota:             |\n";
+    cout << "  |                                              |\n";
+    cout << "  |   1.  Gato                                  |\n";
+    cout << "  |   2.  Perro                                 |\n";
+    cout << "  |   3.  Conejo                                |\n";
+    cout << "  |   4.  Pajaro                                |\n";
+    cout << "  |                                              |\n";
+    cout << "  +----------------------------------------------+\n";
+    cout << "\n  Opcion (1-4): ";
+
+    // Lee y valida la especie; guarda el indice base-0 en la mascota
+    m.indiceEspecie = seleccionarEspecie(especies);
+
+    // Vista previa: muestra el animal que eligio antes de pedir el nombre
+    limpiarPantalla();
+    dibujarTitulo();
+    cout << "\n  Tu " << especies[m.indiceEspecie] << ":\n\n";
+    dibujarAnimal(m.indiceEspecie);
+    cout << "\n  Ponle un nombre a tu " << especies[m.indiceEspecie] << ": ";
+
+    // Lee el nombre (no permite cadenas vacias)
+    m.nombre = pedirNombre();
+
+    // Pone todas las estadisticas al 50% y los cooldowns disponibles
+    inicializarEstadisticas(m);
+
+    // Muestra confirmacion de la mascota creada
+    limpiarPantalla();
+    dibujarTitulo();
+    cout << "\n";
+    cout << "  +----------------------------------------------+\n";
+    cout << "  |         MASCOTA CREADA CON EXITO!            |\n";
+    cout << "  +----------------------------------------------+\n";
+    cout << "  |  Nombre  : " << m.nombre << "\n";
+    cout << "  |  Especie : " << especies[m.indiceEspecie] << "\n";
+    cout << "  |  Stats   : todas al 50%\n";
+    cout << "  +----------------------------------------------+\n\n";
+    dibujarAnimal(m.indiceEspecie); // muestra el animalito de la especie elegida
+    cout << "\n  Cuida bien a " << m.nombre << "!\n";
+    esperarEnter();
+}
+
 //En esta parte mostramos un mensaje de advertencia si la estadistica esta debajo de 20%
 // de lo contrario, devuelve una cadena vacia
 string obtenerAdvertencia(int valor, int idx)
