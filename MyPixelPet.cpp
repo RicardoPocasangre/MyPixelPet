@@ -146,9 +146,39 @@ void dibujarGameOverArt()
     cout << "  +----------------------------------------------+\n";
 }
 
+//MENUS DE NAVEGACION
+
+// Muestra el menu principal y devuelve la opcion elegida (1, 2 o 3).
+// Valida que la entrada este en el rango correcto antes de devolver.
+int menuPrincipal()
+{
+    limpiarPantalla();
+    dibujarTitulo(); // cabecera del juego
+
+    cout << "\n";
+    cout << "  +----------------------------------------------+\n";
+    cout << "  |              MENU PRINCIPAL                  |\n";
+    cout << "  +----------------------------------------------+\n";
+    cout << "  |                                              |\n";
+    cout << "  |   1.  Nueva Partida                         |\n";
+    cout << "  |   2.  Cargar Partida                        |\n";
+    cout << "  |   3.  Salir                                 |\n";
+    cout << "  |                                              |\n";
+    cout << "  +----------------------------------------------+\n";
+    cout << "\n  Selecciona una opcion (1-3): ";
+
+    // Lee la opcion y la valida: debe ser 1, 2 o 3
+    int op = leerEntero();
+    while (op < 1 || op > 3) {
+        cout << "  Opcion no valida. Elige 1, 2 o 3: ";
+        op = leerEntero();
+    }
+    return op;
+}
 //En esta parte mostramos un mensaje de advertencia si la estadistica esta debajo de 20%
 // de lo contrario, devuelve una cadena vacia
 string obtenerAdvertencia(int valor, int idx)
+
 {
     if (valor >= UMBRAL_ADVERTENCIA) return ""; // sin peligro: no muestra nada
 
