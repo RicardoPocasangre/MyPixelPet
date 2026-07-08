@@ -83,6 +83,157 @@ void   borrarSlot(int slot);             // elimina el archivo del slot (se usa 
 
 int main()
 {
+    //Habilitamos los caracteres especiales para que aparezcan en la consola
+    SetConsoleOutputCP(CP_UTF8);
+
+    //Declaracion del estado (todo local nada global)
+    string  especies[TOTAL_ESPECIES]; //arreglo de strings: catalogo de especies
+    Mascota mascota;                  //struct con toda la info de la mascota
+    int     slotActual = 1;           //numero de slot donde se guardara la partida
+
+    //Llena el catalogo de especies y pone todas las stats al 50%
+    inicializarEspecies(especies);
+    inicializarEstadisticas(mascota);
+
+    //MENU PRINCIPAL
+    //Bucle do-while: se repite si el usuario cancela la carga de partida
+    int opcionPrincipal = 0;
+    do {
+        //Muestra las opciones: 1=Nueva 2=Cargar 3=Salir
+        opcionPrincipal = menuPrincipal();
+
+        switch (opcionPrincipal) {
+
+            case 1: //Nueva partida
+                //Pide especie y nombre, inicializa stats al 50%
+                menuNuevaPartida(mascota, especies);
+
+                //Asigna el siguiente slot libre (si todos estan llenos usa el ultimo)
+                slotActual = contarPartidas() + 1;
+                if (slotActual > MAX_PARTIDAS) slotActual = MAX_PARTIDAS;
+                break;
+
+            case 2: //Cargar partida
+                //muestra la lista de los slots y elije uno
+                //si no hay partidas o se cancela devuelve false
+                if (!menuCargarPartida(mascota, especies)) {
+                    opcionPrincipal = 0; //forzamos que muestre el menu principal
+                    continue;
+                }
+
+                //detecta en que numero estaba guardada la mascota
+                //para saber donde esta almacenada si se da guardar y salir
+                slotActual = 1;
+                for (int s = 1; s <= MAX_PARTIDAS; s++) {
+                    Mascota tmp; //mascota para comparar nombres
+                    if (cargarSlot(s, tmp) && tmp.nombre == mascota.nombre) {
+                        slotActual = s; //este es el slot
+                        break;
+                    }
+                }
+                break;
+
+            case 3: //salir del programa
+                limpiarPantalla();
+                dibujarTitulo();
+                cout << "\n\n Hasta pronto. Cuida bien a tu mascota virtual.\n\n";
+                return 0;
+        }
+
+    } while (opcionPrincipal < 1 || opcionPrincipal > 2);
+    //El do-while termina cuando se elije Nueva o cargar una partida
+
+    //BUCLE PRINCIPAL DEL JUEGO
+    //Variables de control del bucle do-while del juego
+    bool salir       = false; //se vuelve true cuando el jugador elige "Guardar y salir"
+    bool mascotaViva = true;  //se vuelve false cuando la mascota muere (Game Over)
+    int  opcion      = 0;     //opcion que elige el jugador en el menu de acciones
+
+    do {
+        //se muestran las estadisticas y la mascota
+        limpiarPantalla();
+        mostrarPanelJuego(mascota, especies);
+
+        //se muestra ll menu de acciones
+        mostrarMenuAcciones();
+
+        //se lee la opcion que se selecciono
+        opcion = leerEntero();
+
+        switch (opcion) {
+
+            case 1: //Dar comida
+            case 2: //Bañar
+            case 3: //Dormir
+            case 4: //Jugar
+            {
+                //Las opciones del 1-4 ocupan el mismo bloque de logica
+                int indiceAccion  = opcion - 1; //leemos la opcion 1-4 en indices 0-3
+                int segsRestantes = 0;           //segundos del cooldown
+
+                //se verifica si la opcion sigue en cooldown de 60s
+                if (accionEnCooldown(mascota, indiceAccion, segsRestantes)) {
+                    //la accion esta en cooldown y se muestra cuanto tiempo queda
+                    cout << "\n  Accion en cooldown. Espera "
+                         << segsRestantes << " segundos.\n";
+                } else {
+                    //la accion esta disponible y se efectua
+                    aplicarAccion(mascota, opcion);
+
+                    //se toma desde aqui para el inicio del cooldown
+                    mascota.ultimaAccion[indiceAccion] = time(0);
+
+                    cout << "\n  Accion realizada sobre " << mascota.nombre << "!\n";
+                }
+                break;
+            }
+
+            case 5: //Guardar y salir
+                //se escribe el estado actual en el archivo del slot correspondiente
+                guardarSlot(slotActual, mascota);
+                cout << "\n  Partida guardada (slot " << slotActual
+                     << "). Hasta luego, " << mascota.nombre << "!\n";
+                salir = true; //señala para terminar el bucle do-while
+                break;
+
+            default: //Opcion invalida
+                cout << "\n  Opcion no valida. Elige del 1 al 5.\n";
+                break;
+        }
+
+        //VERIFICACION DE DERROTA
+        //se validan todas las opciones en las cuales se puede terminar el juego
+        if (!salir) {
+            while (mascotaViva) {
+                //verifica si hay alguna estadistica 0
+                int critico = indiceEstadisticaCritica(mascota);
+
+                if (critico == -1) {
+                    break; //ninguna estadistica esta en 0 = la mascota esta sana
+                }
+
+                //una estadistica llega a 0 y empieza conteo de de 10s
+                //devuelve true si se salvo y false si no se salva
+                if (!gestionarRescate(mascota, critico)) {
+                    mascotaViva = false; //la mascota murio
+                }
+            }
+            //esperamos a que se lea el resultado
+            esperarEnter();
+        }
+
+    } while (!salir && mascotaViva);
+    //se termina cuando la mascota muerte o se le da guardar y salir
+
+    //FIN DEL JUEGO
+    if (!mascotaViva) {
+        //la mascota se murio y se elimina el archivo slot para que no quede
+        //guardado un estado con la mascota muerta o en stats criticas
+        borrarSlot(slotActual);
+
+        //Muestra la pantalla de Game Over con el arte ASCII
+        mostrarGameOver(mascota, especies);
+    }
 
     return 0;
 }
