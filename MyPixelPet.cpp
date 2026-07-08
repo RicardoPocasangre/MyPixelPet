@@ -146,7 +146,9 @@ void dibujarGameOverArt()
     cout << "  +----------------------------------------------+\n";
 }
 
-//MENUS DE NAVEGACION
+/* ------------------------------------------------------------
+ *  MENUS DE NAVEGACION
+ * ------------------------------------------------------------ */
 
 // Muestra el menu principal y devuelve la opcion elegida (1, 2 o 3).
 // Valida que la entrada este en el rango correcto antes de devolver.
@@ -343,6 +345,56 @@ void menuNuevaPartida(Mascota& m, const string especies[])
     dibujarAnimal(m.indiceEspecie); // muestra el animalito de la especie elegida
     cout << "\n  Cuida bien a " << m.nombre << "!\n";
     esperarEnter();
+}
+
+
+/* ------------------------------------------------------------
+ *  INICIALIZACION DE DATOS
+ * ------------------------------------------------------------ */
+
+// Llena el arreglo de especies con los nombres disponibles.
+// Requisito del enunciado: arreglo de strings para las especies.
+void inicializarEspecies(string especies[])
+{
+    especies[0] = "Gato";
+    especies[1] = "Perro";
+    especies[2] = "Conejo";
+    especies[3] = "Pajaro";
+}
+
+// Pone todas las estadisticas al valor inicial (50%) y
+// resetea los cooldowns a 0 (epoch) para que todas las acciones
+// esten disponibles desde el primer turno.
+void inicializarEstadisticas(Mascota& m)
+{
+    for (int i = 0; i < TOTAL_ESTADISTICAS; i++) {
+        m.estadisticas[i] = VALOR_INICIAL; // 50%
+        m.ultimaAccion[i] = 0;             // cooldown: disponible desde el inicio
+    }
+}
+
+// Muestra las especies numeradas y devuelve el indice base-0 de la elegida.
+// Valida que la opcion este en el rango 1-TOTAL_ESPECIES antes de devolver.
+int seleccionarEspecie(const string /*especies*/[])
+{
+    int sel = 0;
+    do {
+        sel = leerEntero(); // lee la opcion del jugador
+        if (sel < 1 || sel > TOTAL_ESPECIES)
+            cout << "  Opcion invalida (1-" << TOTAL_ESPECIES << "): ";
+    } while (sel < 1 || sel > TOTAL_ESPECIES);
+    return sel - 1; // convierte opcion(1-4) a indice(0-3)
+}
+
+// Pide el nombre de la mascota usando getline (permite nombres con espacios).
+// Repite hasta que el jugador escriba algo (no permite nombre vacio).
+string pedirNombre()
+{
+    string nombre;
+    do {
+        getline(cin, nombre); // getline lee toda la linea incluyendo espacios
+    } while (nombre.empty());
+    return nombre;
 }
 
 //En esta parte mostramos un mensaje de advertencia si la estadistica esta debajo de 20%
